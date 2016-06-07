@@ -1,0 +1,21 @@
+{
+  "name": "impress-php/framework",
+  "description": "The Impress PHP Framework.",
+  "keywords": [],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Harold Hoo",
+      "email": "mail@yaolong.me",
+      "homepage": "http://www.yaolong.me"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.9"
+  },
+  "autoload": {
+    "psr-4": {
+      "Impress\\": "src/"
+    }
+  }
+}

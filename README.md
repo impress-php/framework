@@ -1,2 +1,3 @@
 # framework
-The Impress PHP Framework. 
+The Impress PHP Framework.
+Elegance, Simple, Extendibility.
