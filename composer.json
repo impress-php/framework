@@ -1,7 +1,7 @@
 {
   "name": "impress-php/framework",
   "description": "The Impress PHP Framework.",
-  "keywords": [],
+  "keywords": ["impress", "impress-php", "framework"],
   "license": "MIT",
   "authors": [
     {
