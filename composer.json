@@ -15,7 +15,7 @@
         "symfony/http-foundation" : "~3.0",
         "symfony/routing" : "~3.0",
         "symfony/debug" : "~3.0",
-        "vlucas/phpdotenv" : "~2.2",
+        "vlucas/phpdotenv" : "~2.2"
     },
     "autoload": {
         "psr-4": {
