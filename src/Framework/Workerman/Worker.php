@@ -12,7 +12,6 @@ class Worker extends \Workerman\Worker
         self::$AppName = $AppName;
         self::$AppName || self::$AppName = "workerman";
 
-
         static::$logFile = self::workermanTempFile(self::FILE_TYPE_LOG);
         static::$pidFile = self::workermanTempFile(self::FILE_TYPE_PID);
         static::$stdoutFile = self::workermanTempFile(self::FILE_TYPE_STDOUT);
