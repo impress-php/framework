@@ -1,21 +1,25 @@
 {
-  "name": "impress-php/framework",
-  "description": "The Impress PHP Framework.",
-  "keywords": ["impress", "impress-php", "framework"],
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Harold Hoo",
-      "email": "mail@yaolong.me",
-      "homepage": "http://www.yaolong.me"
+    "name": "impress-php/framework",
+    "description": "The Impress PHP Framework.",
+    "keywords": ["impress", "impress-php", "framework"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Harold Hoo",
+            "email": "mail@yaolong.me",
+            "homepage": "http://www.yaolong.me"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.9",
+        "symfony/http-foundation" : "~3.0",
+        "symfony/routing" : "~3.0",
+        "symfony/debug" : "~3.0",
+        "vlucas/phpdotenv" : "~2.2",
+    },
+    "autoload": {
+        "psr-4": {
+            "Impress\\": "src/"
+        }
     }
-  ],
-  "require": {
-    "php": ">=5.3.9"
-  },
-  "autoload": {
-    "psr-4": {
-      "Impress\\": "src/"
-    }
-  }
 }
