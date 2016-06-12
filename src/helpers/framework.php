@@ -5,3 +5,10 @@ if (!function_exists("config")) {
         return \Impress\Framework\Config\Config::get($file);
     }
 }
+
+if (!function_exists("is_production")) {
+    function is_production()
+    {
+        return boolval((getenv('ENV') == "production"));
+    }
+}
