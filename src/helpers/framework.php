@@ -13,8 +13,8 @@ if (!function_exists("is_production")) {
     }
 }
 
-if (!function_exists("request_uri")) {
-    function request_uri()
+if (!function_exists("document_uri")) {
+    function document_uri()
     {
         if (($uri_query_mark = strpos($_SERVER['REQUEST_URI'], "?")) <= 0) {
             return $_SERVER['REQUEST_URI'];
