@@ -12,3 +12,13 @@ if (!function_exists("is_production")) {
         return boolval((getenv('ENV') == "production"));
     }
 }
+
+if (!function_exists("request_uri")) {
+    function request_uri()
+    {
+        if (($uri_query_mark = strpos($_SERVER['REQUEST_URI'], "?")) <= 0) {
+            return $_SERVER['REQUEST_URI'];
+        }
+        return substr($_SERVER['REQUEST_URI'], 0, $uri_query_mark);
+    }
+}
