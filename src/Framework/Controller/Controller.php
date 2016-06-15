@@ -8,7 +8,7 @@ class Controller
 {
     private static $request;
 
-    protected function __construct()
+    public function __construct()
     {
 
     }
