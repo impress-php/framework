@@ -1,10 +1,8 @@
 <?php
 namespace Impress\Framework\Controller;
 
-use Impress\Framework\View\View;
-use Symfony\Component\HttpFoundation\Cookie;
-use \Symfony\Component\HttpFoundation\Request;
-use \Symfony\Component\HttpFoundation\Response;
+use Impress\Framework\Response\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 class Controller
 {
@@ -16,7 +14,7 @@ class Controller
 
     }
 
-    protected function request(
+    public function request(
         array $query = array(),
         array $request = array(),
         array $attributes = array(),
@@ -37,37 +35,21 @@ class Controller
         return self::$request;
     }
 
-    protected function cookie_set(Response $response, $name, $value = null, $expire = 0, $path = '/', $domain = null, $secure = false, $httpOnly = true, $raw = false)
+    public function clearRequest()
     {
-        $cookie = new Cookie($name, $value, $expire, $path, $domain, $secure, $httpOnly, $raw);
-        $response->headers->setCookie($cookie);
+        self::$request = null;
     }
 
-    protected function cookie_get()
+    public function response()
     {
-
+        if (!(self::$response instanceof Response)) {
+            self::$response = new Response();
+        }
+        return self::$response;
     }
 
-    protected function response($content = "", $statusCode = 200, array $headers = array())
+    public function clearResponse()
     {
-        $response = new Response();
-        $response->setContent($content);
-        $response->setStatusCode($statusCode);
-        $response->headers->add($headers);
-        return $response;
-    }
-
-    protected function view($name, array $data = array(), $statusCode = 200, array $headers = array(), $engine = View::ENGINE_AUTO)
-    {
-        $content = View::make($name, $data, $engine);
-        return $this->response($content, $statusCode, $headers);
-    }
-
-    protected function json(array $data, $statusCode = 200, array $headers = array(
-        "Content-Type" => "application/json"
-    ))
-    {
-        $content = json_encode($data);
-        return $this->response($content, $statusCode, $headers);
+        self::$response = null;
     }
 }

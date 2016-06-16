@@ -1,5 +1,5 @@
 <?php
-namespace Impress\Framework\View;
+namespace Impress\Framework\Response;
 
 use Symfony\Component\Templating\Loader\FilesystemLoader;
 use Symfony\Component\Templating\PhpEngine;
