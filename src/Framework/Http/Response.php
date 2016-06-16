@@ -1,5 +1,5 @@
 <?php
-namespace Impress\Framework\Response;
+namespace Impress\Framework\Http;
 
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;

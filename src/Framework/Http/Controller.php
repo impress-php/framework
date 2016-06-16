@@ -1,8 +1,5 @@
 <?php
-namespace Impress\Framework\Controller;
-
-use Impress\Framework\Response\Response;
-use Symfony\Component\HttpFoundation\Request;
+namespace Impress\Framework\Http;
 
 class Controller
 {
