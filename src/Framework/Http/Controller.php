@@ -3,7 +3,6 @@ namespace Impress\Framework\Http;
 
 class Controller
 {
-    private static $request;
     private static $response;
 
     public function __construct()
@@ -21,20 +20,12 @@ class Controller
         $content = null
     )
     {
-        if (!(self::$request instanceof Request)) {
-            empty($query) && $query = $_GET;
-            empty($request) && $request = $_POST;
-            empty($cookies) && $cookies = $_COOKIE;
-            empty($files) && $files = $_FILES;
-            empty($server) && $server = $_SERVER;
-            self::$request = new Request($query, $request, $attributes, $cookies, $files, $server, $content);
-        }
-        return self::$request;
+        return Request::request($query, $request, $attributes, $cookies, $files, $server, $content);
     }
 
     public function clearRequest()
     {
-        self::$request = null;
+        Request::clearRequest();
     }
 
     public function response()

@@ -2,10 +2,10 @@
 namespace Impress\Framework\Http;
 
 use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Symfony\Component\HttpFoundation\Response as VendorResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
-class Response extends SymfonyResponse
+class Response extends VendorResponse
 {
     public function raw($content = "", $statusCode = 200, array $headers = array())
     {
@@ -30,7 +30,7 @@ class Response extends SymfonyResponse
     }
 
     /**
-     * Constructor.
+     * setCookie.
      *
      * @param string $name The name of the cookie
      * @param string $value The value of the cookie
