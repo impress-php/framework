@@ -14,6 +14,7 @@ class Route
     private static $routes = array();
     private static $routeCollection;
     private static $groupAttributes = array();
+    private static $groupAttributesKey = 0;
     private static $route_name_id = 0;
 
     private static function addRoute($path, array $defaults = array(), array $requirements = array(), array $options = array(), $host = '', $schemes = array(), $methods = array(), $condition = '')
@@ -21,15 +22,21 @@ class Route
         $routeName = isset($defaults['name']) ? $defaults['name'] : "";
         $prefix = isset($defaults['prefix']) ? $defaults['prefix'] : "";
 
-        if (isset(self::$groupAttributes['prefix'])) {
-            $prefix = self::$groupAttributes['prefix'] . $prefix;
-        }
+        if (!empty(self::$groupAttributes)) {
+            $prefix_arr = array();
+            foreach (self::$groupAttributes as $ga) {
+                if (isset($ga['prefix'])) {
+                    array_push($prefix_arr, $ga['prefix']);
+                }
 
-        if (isset(self::$groupAttributes['middleware'])) {
-            if (!isset($defaults['middleware'])) {
-                $defaults['middleware'] = array();
+                if (isset($ga['middleware'])) {
+                    if (!isset($defaults['middleware'])) {
+                        $defaults['middleware'] = array();
+                    }
+                    $defaults['middleware'] = array_merge($ga['middleware'], $defaults['middleware']);
+                }
             }
-            $defaults['middleware'] = array_merge(self::$groupAttributes['middleware'], $defaults['middleware']);
+            $prefix = implode("", $prefix_arr) . $prefix;
         }
 
         $path = trim(trim($path), '/');
@@ -56,7 +63,7 @@ class Route
         return "ROUTE_ID:" . self::$route_name_id;
     }
 
-    public static function add($path, $controllerFunc, $methods = array(), $prefix = '', $routeName = '', $host = '', $schemes = array())
+    public static function add($path, $controllerFunc, $methods = array(), array $middleware = array(), $prefix = '', $routeName = '', $host = '', $schemes = array())
     {
         if (is_array($path)) {
             foreach ($path as $r) {
@@ -76,7 +83,8 @@ class Route
             array(
                 'controllerFunc' => $controllerFunc,
                 'prefix' => $prefix,
-                'name' => $routeName
+                'name' => $routeName,
+                'middleware' => $middleware
             ),
             array(),
             array(),
@@ -86,7 +94,7 @@ class Route
         );
     }
 
-    public static function get($path, $controllerFunc, $prefix = '', $routeName = '', $host = '', $schemes = array())
+    public static function get($path, $controllerFunc, array $middleware = array(), $prefix = '', $routeName = '', $host = '', $schemes = array())
     {
         if (is_array($path)) {
             foreach ($path as &$r) {
@@ -95,10 +103,10 @@ class Route
             }
         }
 
-        return self::add($path, $controllerFunc, "get", $prefix, $routeName, $host, $schemes);
+        return self::add($path, $controllerFunc, "get", $middleware, $prefix, $routeName, $host, $schemes);
     }
 
-    public static function post($path, $controllerFunc, $prefix = '', $routeName = '', $host = '', $schemes = array())
+    public static function post($path, $controllerFunc, array $middleware = array(), $prefix = '', $routeName = '', $host = '', $schemes = array())
     {
         if (is_array($path)) {
             foreach ($path as &$r) {
@@ -107,14 +115,15 @@ class Route
             }
         }
 
-        return self::add($path, $controllerFunc, "post", $prefix, $routeName, $host, $schemes);
+        return self::add($path, $controllerFunc, "post", $middleware, $prefix, $routeName, $host, $schemes);
     }
 
     public static function group(array $attributes, \Closure $callable)
     {
-        self::$groupAttributes = $attributes;
+        self::$groupAttributesKey++;
+        self::$groupAttributes[self::$groupAttributesKey] = $attributes;
         call_user_func($callable);
-        self::$groupAttributes = array();
+        unset(self::$groupAttributes[self::$groupAttributesKey]);
     }
 
     private static function addRoutesToRouteCollection()
