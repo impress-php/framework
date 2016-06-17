@@ -140,6 +140,16 @@ class Route
         }
     }
 
+    public static function setRoutes(array $routes)
+    {
+        self::$routes = $routes;
+    }
+
+    public static function getRoutes()
+    {
+        return self::$routes;
+    }
+
     public static function work()
     {
         self::addRoutesToRouteCollection();

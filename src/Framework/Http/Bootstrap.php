@@ -17,10 +17,19 @@ class Bootstrap
         $this->httpWork();
     }
 
+    public static function getRoutesFile()
+    {
+        return self::$routesFile;
+    }
+
     private function httpWork()
     {
-        if (is_file(self::$routesFile)) {
-            require_once(self::$routesFile);
+        if (getenv("ROUTES_NO_CACHE")) {
+            if (is_file(self::$routesFile)) {
+                require_once(self::$routesFile);
+            }
+        } else {
+            RouteCache::makeRoutes();
         }
 
         $parameters = Route::work();
