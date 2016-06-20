@@ -66,8 +66,10 @@ class Session extends VendorSession
             case 'mongo':
             case 'pdo':
             case 'file':
-            default:
                 $handler = call_user_func([$this, "{$driver}SessionHandler"]);
+                break;
+            default:
+                throw new \Exception("The session driver not support.");
                 break;
         }
 
