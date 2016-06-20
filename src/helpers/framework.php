@@ -1,8 +1,8 @@
 <?php
 if (!function_exists("config")) {
-    function config($file)
+    function config($parameters)
     {
-        return \Impress\Framework\Config\Config::get($file);
+        return \Impress\Framework\Config\Config::get($parameters);
     }
 }
 

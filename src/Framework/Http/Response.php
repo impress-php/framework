@@ -26,7 +26,8 @@ class Response extends VendorResponse
     ))
     {
         $content = json_encode($data);
-        return $this->raw($content, $statusCode, $headers);
+        $this->raw($content, $statusCode, $headers);
+        return $this;
     }
 
     /**
