@@ -3,10 +3,32 @@ namespace Impress\Framework\Http\Session\Storage\Handler;
 
 class RedisSessionHandler implements \SessionHandlerInterface
 {
+    /**
+     * @var \Redis Memcache driver.
+     */
     protected $redis;
+
+    /**
+     * @var string Key prefix for shared environments.
+     */
+    private $prefix;
+
+    /**
+     * @var int Time to live in seconds
+     */
+    private $ttl;
 
     public function __construct(\Redis $redis, array $options)
     {
+        if ($diff = array_diff(array_keys($options), array('prefix', 'expiretime'))) {
+            throw new \InvalidArgumentException(sprintf(
+                'The following options are not supported "%s"', implode(', ', $diff)
+            ));
+        }
+
+        $this->redis = $redis;
+        $this->ttl = isset($options['expiretime']) ? (int)$options['expiretime'] : 86400;
+        $this->prefix = isset($options['prefix']) ? $options['prefix'] : 'ipss_';
     }
 
     /**
@@ -19,6 +41,7 @@ class RedisSessionHandler implements \SessionHandlerInterface
      */
     public function close()
     {
+        $this->redis->close();
     }
 
     /**
@@ -32,6 +55,7 @@ class RedisSessionHandler implements \SessionHandlerInterface
      */
     public function destroy($session_id)
     {
+        return $this->redis->del($this->prefix . $session_id);
     }
 
     /**
@@ -64,6 +88,7 @@ class RedisSessionHandler implements \SessionHandlerInterface
      */
     public function open($save_path, $session_id)
     {
+        return true;
     }
 
 
@@ -79,6 +104,9 @@ class RedisSessionHandler implements \SessionHandlerInterface
      */
     public function read($session_id)
     {
+        $session_id = $this->prefix . $session_id;
+        $this->redis->expire($session_id, $this->ttl);
+        return $this->redis->get($session_id);
     }
 
     /**
@@ -99,5 +127,7 @@ class RedisSessionHandler implements \SessionHandlerInterface
      */
     public function write($session_id, $session_data)
     {
+        $session_id = $this->prefix . $session_id;
+        return $this->redis->set($session_id, $session_data, $this->ttl);
     }
 }
