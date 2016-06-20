@@ -2,154 +2,104 @@
 namespace Impress\Framework\Http\Session\Storage\Handler;
 
 use Predis\Client;
-use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
-use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
-use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
 
-class PredisSessionHandler implements SessionStorageInterface
+class PredisSessionHandler implements \SessionHandlerInterface
 {
-    public function __construct()
-    {
+    protected $redis;
 
-    }
-
-    /**
-     * Starts the session.
-     *
-     * @return bool True if started.
-     *
-     * @throws \RuntimeException If something goes wrong starting the session.
-     */
-    public function start()
+    public function __construct(Client $redis, array $options)
     {
     }
 
     /**
-     * Checks if the session is started.
-     *
-     * @return bool True if started, false otherwise.
+     * Close the session
+     * @link http://php.net/manual/en/sessionhandlerinterface.close.php
+     * @return bool <p>
+     * The return value (usually TRUE on success, FALSE on failure).
+     * Note this value is returned internally to PHP for processing.
+     * </p>
      */
-    public function isStarted()
+    public function close()
     {
     }
 
     /**
-     * Returns the session ID.
-     *
-     * @return string The session ID or empty.
+     * Destroy a session
+     * @link http://php.net/manual/en/sessionhandlerinterface.destroy.php
+     * @param string $session_id The session ID being destroyed.
+     * @return bool <p>
+     * The return value (usually TRUE on success, FALSE on failure).
+     * Note this value is returned internally to PHP for processing.
+     * </p>
      */
-    public function getId()
+    public function destroy($session_id)
     {
     }
 
     /**
-     * Sets the session ID.
-     *
-     * @param string $id
+     * Cleanup old sessions
+     * @link http://php.net/manual/en/sessionhandlerinterface.gc.php
+     * @param int $maxlifetime <p>
+     * Sessions that have not updated for
+     * the last maxlifetime seconds will be removed.
+     * </p>
+     * @return bool <p>
+     * The return value (usually TRUE on success, FALSE on failure).
+     * Note this value is returned internally to PHP for processing.
+     * </p>
      */
-    public function setId($id)
+    public function gc($maxlifetime)
+    {
+        // not required here because redis will auto expire the records anyhow.
+        return true;
+    }
+
+    /**
+     * Initialize session
+     * @link http://php.net/manual/en/sessionhandlerinterface.open.php
+     * @param string $save_path The path where to store/retrieve the session.
+     * @param string $session_id The session id.
+     * @return bool <p>
+     * The return value (usually TRUE on success, FALSE on failure).
+     * Note this value is returned internally to PHP for processing.
+     * </p>
+     */
+    public function open($save_path, $session_id)
+    {
+    }
+
+
+    /**
+     * Read session data
+     * @link http://php.net/manual/en/sessionhandlerinterface.read.php
+     * @param string $session_id The session id to read data for.
+     * @return string <p>
+     * Returns an encoded string of the read data.
+     * If nothing was read, it must return an empty string.
+     * Note this value is returned internally to PHP for processing.
+     * </p>
+     */
+    public function read($session_id)
     {
     }
 
     /**
-     * Returns the session name.
-     *
-     * @return mixed The session name.
+     * Write session data
+     * @link http://php.net/manual/en/sessionhandlerinterface.write.php
+     * @param string $session_id The session id.
+     * @param string $session_data <p>
+     * The encoded session data. This data is the
+     * result of the PHP internally encoding
+     * the $_SESSION superglobal to a serialized
+     * string and passing it as this parameter.
+     * Please note sessions use an alternative serialization method.
+     * </p>
+     * @return bool <p>
+     * The return value (usually TRUE on success, FALSE on failure).
+     * Note this value is returned internally to PHP for processing.
+     * </p>
      */
-    public function getName()
-    {
-    }
-
-    /**
-     * Sets the session name.
-     *
-     * @param string $name
-     */
-    public function setName($name)
-    {
-    }
-
-    /**
-     * Regenerates id that represents this storage.
-     *
-     * This method must invoke session_regenerate_id($destroy) unless
-     * this interface is used for a storage object designed for unit
-     * or functional testing where a real PHP session would interfere
-     * with testing.
-     *
-     * Note regenerate+destroy should not clear the session data in memory
-     * only delete the session data from persistent storage.
-     *
-     * Care: When regenerating the session ID no locking is involved in PHP's
-     * session design. See https://bugs.php.net/bug.php?id=61470 for a discussion.
-     * So you must make sure the regenerated session is saved BEFORE sending the
-     * headers with the new ID. Symfony's HttpKernel offers a listener for this.
-     * See Symfony\Component\HttpKernel\EventListener\SaveSessionListener.
-     * Otherwise session data could get lost again for concurrent requests with the
-     * new ID. One result could be that you get logged out after just logging in.
-     *
-     * @param bool $destroy Destroy session when regenerating?
-     * @param int $lifetime Sets the cookie lifetime for the session cookie. A null value
-     *                       will leave the system settings unchanged, 0 sets the cookie
-     *                       to expire with browser session. Time is in seconds, and is
-     *                       not a Unix timestamp.
-     *
-     * @return bool True if session regenerated, false if error
-     *
-     * @throws \RuntimeException If an error occurs while regenerating this storage
-     */
-    public function regenerate($destroy = false, $lifetime = null)
-    {
-    }
-
-    /**
-     * Force the session to be saved and closed.
-     *
-     * This method must invoke session_write_close() unless this interface is
-     * used for a storage object design for unit or functional testing where
-     * a real PHP session would interfere with testing, in which case
-     * it should actually persist the session data if required.
-     *
-     * @throws \RuntimeException If the session is saved without being started, or if the session
-     *                           is already closed.
-     */
-    public function save()
-    {
-    }
-
-    /**
-     * Clear all session data in memory.
-     */
-    public function clear()
-    {
-    }
-
-    /**
-     * Gets a SessionBagInterface by name.
-     *
-     * @param string $name
-     *
-     * @return SessionBagInterface
-     *
-     * @throws \InvalidArgumentException If the bag does not exist
-     */
-    public function getBag($name)
-    {
-    }
-
-    /**
-     * Registers a SessionBagInterface for use.
-     *
-     * @param SessionBagInterface $bag
-     */
-    public function registerBag(SessionBagInterface $bag)
-    {
-    }
-
-    /**
-     * @return MetadataBag
-     */
-    public function getMetadataBag()
+    public function write($session_id, $session_data)
     {
     }
 }
