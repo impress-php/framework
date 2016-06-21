@@ -150,6 +150,15 @@ class Route
         return self::$routes;
     }
 
+    /**
+     * @param $routeName
+     * @return VendorRoute
+     */
+    public static function getRoute($routeName)
+    {
+        return self::$routes[$routeName]['route'];
+    }
+
     public static function work()
     {
         self::addRoutesToRouteCollection();

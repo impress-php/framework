@@ -21,13 +21,30 @@ class Response extends VendorResponse
         return $this;
     }
 
-    public function json(array $data, $statusCode = 200, array $headers = array(
+    public function json(array $data, $statusCode = 200, array $headers = [
         "Content-Type" => "application/json"
-    ))
+    ])
     {
         $content = json_encode($data);
         $this->raw($content, $statusCode, $headers);
         return $this;
+    }
+
+    public function redirect($uri, $statusCode = 302, array $headers = [])
+    {
+        $headers = array_merge($headers, [
+            'Location' => $uri
+        ]);
+        $this->setStatusCode($statusCode);
+        $this->headers->add($headers);
+        return $this;
+    }
+
+    public function redirectRoute($routeName, $statusCode = 302, array $headers = [])
+    {
+        $route = Route::getRoute($routeName);
+        $uri = $route->getPath();
+        return $this->redirect($uri, $statusCode, $headers);
     }
 
     /**
