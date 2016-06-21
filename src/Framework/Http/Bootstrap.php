@@ -24,7 +24,7 @@ class Bootstrap
 
     private function httpWork()
     {
-        if (getenv("ROUTES_NO_CACHE")) {
+        if (env("ROUTES_NO_CACHE", false)) {
             if (is_file(self::$routesFile)) {
                 require_once(self::$routesFile);
             }

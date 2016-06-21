@@ -43,7 +43,7 @@ class Controller
         $content = null
     )
     {
-        $session = new Session(getenv("SESSION_DRIVER"));
+        $session = new Session(env("SESSION_DRIVER", 'file'));
         $this->request($query, $request, $attributes, $cookies, $files, $server, $content)->setSession($session);
         session_start();
     }

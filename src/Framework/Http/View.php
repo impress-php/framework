@@ -20,9 +20,9 @@ class View
 
     public static function make($name, array $data = array(), $engine = self::ENGINE_AUTO)
     {
-        is_null(self::$TWIG_OPTION_DEBUG) && self::$TWIG_OPTION_DEBUG = getenv("TWIG_OPTION_DEBUG");
-        is_null(self::$TWIG_OPTION_AUTO_RELOAD) && self::$TWIG_OPTION_AUTO_RELOAD = getenv("TWIG_OPTION_AUTO_RELOAD");
-        is_null(self::$TWIG_OPTION_CHARSET) && self::$TWIG_OPTION_CHARSET = getenv("TWIG_OPTION_CHARSET");
+        is_null(self::$TWIG_OPTION_DEBUG) && self::$TWIG_OPTION_DEBUG = env("TWIG_OPTION_DEBUG", 0);
+        is_null(self::$TWIG_OPTION_AUTO_RELOAD) && self::$TWIG_OPTION_AUTO_RELOAD = env("TWIG_OPTION_AUTO_RELOAD", 1);
+        is_null(self::$TWIG_OPTION_CHARSET) && self::$TWIG_OPTION_CHARSET = env("TWIG_OPTION_CHARSET", "UTF-8");
 
         if ($engine == self::ENGINE_AUTO) {
             $name_ext = substr($name, strrpos($name, '.'));

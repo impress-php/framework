@@ -66,8 +66,8 @@ class Session extends VendorSession
     public function __construct($driver, array $optionsHandler = array(), array $optionsStorage = array(), SessionStorageInterface $storage = null, AttributeBagInterface $attributes = null, FlashBagInterface $flashes = null)
     {
         $optionsHandler = $optionsHandler ?: [
-            'prefix' => getenv("SESSION_ID_PREFIX"),
-            'expiretime' => getenv("SESSION_DEFAULT_EXPIRE")
+            'prefix' => env("SESSION_ID_PREFIX", 'sid_'),
+            'expiretime' => env("SESSION_DEFAULT_EXPIRE", 86400)
         ];
         switch ($driver = strtolower($driver)) {
             case 'redis':
