@@ -34,6 +34,7 @@ class Bootstrap
 
         $parameters = Route::work();
         $controllerFunc = $parameters['controllerFunc'];
+        $middlewareParameters = $parameters['middleware'];
 
         if (is_callable($controllerFunc)) {
             $return = call_user_func($controllerFunc);
@@ -45,7 +46,17 @@ class Bootstrap
 
             $calssPosition = "\\App\\Http\\Controllers\\" . $className;
             $class = new $calssPosition();
-            $return = call_user_func_array(array($class, $methodName), array());
+
+            // Middleware
+            if ($middlewareParameters) {
+                call_user_func_array([$class, 'middleware'], $middlewareParameters);
+            }
+            $middlewares = call_user_func([$class, "getMiddleware"]);
+            if ($middlewares) {
+
+            }
+
+            $return = call_user_func_array([$class, $methodName], array());
             $this->setResponseContent($return);
         }
     }

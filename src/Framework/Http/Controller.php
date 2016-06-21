@@ -7,11 +7,6 @@ class Controller
 {
     private static $response;
 
-    public function __construct()
-    {
-
-    }
-
     public function request(
         array $query = array(),
         array $request = array(),
@@ -69,5 +64,19 @@ class Controller
     public function clearResponse()
     {
         self::$response = null;
+    }
+
+    public function middleware($middleware)
+    {
+        if (is_array($middleware)) {
+            foreach ($middleware as $m) {
+                $this->middleware($m);
+            }
+        }
+    }
+
+    public function getMiddleware()
+    {
+
     }
 }
