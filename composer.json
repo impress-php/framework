@@ -17,14 +17,15 @@
         "twig/twig" : "~1.0",
         "symfony/routing" : "~3.0",
         "symfony/debug" : "~3.0",
-        "vlucas/phpdotenv" : "~2.2"
+        "vlucas/phpdotenv" : "~2.2",
+        "danielstjules/stringy" : "~2.3.2"
     },
     "autoload": {
         "psr-4": {
             "Impress\\": "src/"
         },
         "files": [
-            "src/helpers/framework.php"
+            "src/Support/helpers.php"
         ]
     }
 }

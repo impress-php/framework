@@ -1,4 +1,6 @@
 <?php
+use \Impress\Support\Str;
+
 if (!function_exists("config")) {
     function config($parameters, $default = null)
     {
@@ -47,6 +49,9 @@ if (!function_exists('env')) {
                 return null;
         }
 
+        if (Str::startsWith($value, '"') && Str::endsWith($value, '"')) {
+            return substr($value, 1, -1);
+        }
         return $value;
     }
 }
