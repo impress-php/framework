@@ -1,10 +1,12 @@
 <?php
 namespace Impress\Framework\Http\Session;
 
+use Impress\Framework\Database\Memcached;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session as VendorSession;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
@@ -14,7 +16,11 @@ class Session extends VendorSession
     /**
      * Session constructor.
      * @param String $driver
-     * @param array $options
+     * @param array $optionsHandler
+     * prefix
+     * expiretime
+     *
+     * @param array $optionsStorage
      *
      * List of options for $options array with their defaults.
      *
@@ -55,8 +61,12 @@ class Session extends VendorSession
      * @param AttributeBagInterface|null $attributes
      * @param FlashBagInterface|null $flashes
      */
-    public function __construct($driver, array $options = array(), SessionStorageInterface $storage = null, AttributeBagInterface $attributes = null, FlashBagInterface $flashes = null)
+    public function __construct($driver, array $optionsHandler = array(), array $optionsStorage = array(), SessionStorageInterface $storage = null, AttributeBagInterface $attributes = null, FlashBagInterface $flashes = null)
     {
+        $optionsHandler = $optionsHandler ?: [
+            'prefix' => getenv("SESSION_ID_PREFIX"),
+            'expiretime' => getenv("SESSION_DEFAULT_EXPIRE")
+        ];
         switch ($driver = strtolower($driver)) {
             case 'redis':
             case 'predis':
@@ -66,22 +76,30 @@ class Session extends VendorSession
             case 'mongo':
             case 'pdo':
             case 'file':
-                $handler = call_user_func([$this, "{$driver}SessionHandler"]);
+                $handler = call_user_func_array([$this, "{$driver}SessionHandler"], [$optionsHandler]);
                 break;
             default:
                 throw new \Exception("The session driver not support.");
                 break;
         }
 
-        $options = $options ?: config(getenv("SESSION_OPTIONS"));
-        $storage = $storage ?: new NativeSessionStorage($options, $handler);
+        $optionsStorage = $optionsStorage ?: config(getenv("SESSION_OPTIONS"));
+        $storage = $storage ?: new NativeSessionStorage($optionsStorage, $handler);
         $attributes = $attributes ?: new AttributeBag("_ips_attributes");
         parent::__construct($storage, $attributes, $flashes);
     }
 
-    private function fileSessionHandler()
+    private function fileSessionHandler($optionsHandler)
     {
         $handler = new NativeFileSessionHandler(SESSIONS_DIR);
+        return $handler;
+    }
+
+    private function memcachedSessionHandler($optionsHandler)
+    {
+        $mc = new Memcached();
+        $mc->connect();
+        $handler = new MemcachedSessionHandler($mc, $optionsHandler);
         return $handler;
     }
 }
