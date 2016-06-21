@@ -2,11 +2,14 @@
 namespace Impress\Framework\Http\Session;
 
 use Impress\Framework\Database\Memcached;
+use Impress\Framework\Database\Redis;
+use Impress\Framework\Http\Session\Storage\Handler\RedisSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session as VendorSession;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcacheSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
@@ -100,6 +103,14 @@ class Session extends VendorSession
         $mc = new Memcached();
         $mc->connect();
         $handler = new MemcachedSessionHandler($mc, $optionsHandler);
+        return $handler;
+    }
+
+    private function redisSessionHandler($optionsHandler)
+    {
+        $redis = new Redis();
+        $redis->connect();
+        $handler = new RedisSessionHandler($redis, $optionsHandler);
         return $handler;
     }
 }
