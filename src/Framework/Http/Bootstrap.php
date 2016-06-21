@@ -1,8 +1,6 @@
 <?php
 namespace Impress\Framework\Http;
 
-use Impress\Framework\Http\Middleware\MiddlewareHandle;
-
 class Bootstrap
 {
     private static $routesFile;
@@ -35,27 +33,27 @@ class Bootstrap
         }
 
         $parameters = Route::work();
-        $controllerFunc = $parameters['controllerFunc'];
-        $middlewareParameters = $parameters['middleware'];
+        $routeControllerFunc = $parameters['controllerFunc'];
+        $routeMiddleware = $parameters['middleware'];
 
-        if (is_callable($controllerFunc)) {
-            $return = call_user_func($controllerFunc);
+        if (is_callable($routeControllerFunc)) {
+            $return = call_user_func($routeControllerFunc);
             $this->setResponseContent($return);
         } else {
-            $atPos = strpos($controllerFunc, "@");
-            $className = substr($controllerFunc, 0, $atPos);
-            $methodName = substr($controllerFunc, $atPos + 1);
+            $atPos = strpos($routeControllerFunc, "@");
+            $className = substr($routeControllerFunc, 0, $atPos);
+            $methodName = substr($routeControllerFunc, $atPos + 1);
 
             $calssPosition = "\\App\\Http\\Controllers\\" . $className;
             $class = new $calssPosition();
 
             // Middleware
-            if ($middlewareParameters) {
-                call_user_func_array([$class, 'middleware'], $middlewareParameters);
+            if ($routeMiddleware) {
+                call_user_func_array([$class, 'middleware'], $routeMiddleware);
             }
-            MiddlewareHandle::handle();
+            $return = Middleware::handle();
 
-            $return = call_user_func_array([$class, $methodName], array());
+            is_bool($return) && $return = call_user_func_array([$class, $methodName], array());
             $this->setResponseContent($return);
         }
     }
