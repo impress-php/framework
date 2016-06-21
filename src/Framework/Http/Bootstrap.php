@@ -1,6 +1,8 @@
 <?php
 namespace Impress\Framework\Http;
 
+use Impress\Framework\Http\Middleware\MiddlewareHandle;
+
 class Bootstrap
 {
     private static $routesFile;
@@ -51,10 +53,7 @@ class Bootstrap
             if ($middlewareParameters) {
                 call_user_func_array([$class, 'middleware'], $middlewareParameters);
             }
-            $middlewares = call_user_func([$class, "getMiddleware"]);
-            if ($middlewares) {
-
-            }
+            MiddlewareHandle::handle();
 
             $return = call_user_func_array([$class, $methodName], array());
             $this->setResponseContent($return);

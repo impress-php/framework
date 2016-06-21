@@ -1,6 +1,7 @@
 <?php
 namespace Impress\Framework\Http;
 
+use Impress\Framework\Http\Middleware\MiddlewareHandle;
 use Impress\Framework\Http\Session\Session;
 
 class Controller
@@ -68,15 +69,6 @@ class Controller
 
     public function middleware($middleware)
     {
-        if (is_array($middleware)) {
-            foreach ($middleware as $m) {
-                $this->middleware($m);
-            }
-        }
-    }
-
-    public function getMiddleware()
-    {
-
+        MiddlewareHandle::addMiddleware($middleware);
     }
 }
