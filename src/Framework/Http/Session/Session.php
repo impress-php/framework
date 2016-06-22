@@ -81,7 +81,7 @@ class Session extends VendorSession
                 $handler = call_user_func_array([$this, "{$driver}SessionHandler"], [$optionsHandler]);
                 break;
             default:
-                throw new \Exception("The session driver not support.");
+                throw new \RuntimeException("The session driver not support.");
                 break;
         }
 

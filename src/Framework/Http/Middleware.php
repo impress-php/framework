@@ -28,7 +28,7 @@ class Middleware
             is_file(self::$middlewareMapFile) && self::$map = require_once(self::$middlewareMapFile);
         }
         if (!isset(self::$map[$middlewares])) {
-            throw new \Exception("The middleware '{$middlewares}' can not found in map file [" . self::$middlewareMapFile . "].");
+            throw new \RuntimeException("The middleware '{$middlewares}' can not found in map file [" . self::$middlewareMapFile . "].");
         }
         return self::$map[$middlewares];
     }

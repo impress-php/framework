@@ -5,7 +5,7 @@ if (!function_exists("config")) {
     function config($parameters, $default = null)
     {
         $value = \Impress\Framework\Config\Config::get($parameters);
-        if ($value === false) return value($default);
+        if ($value === null) return value($default);
         return $value;
     }
 }

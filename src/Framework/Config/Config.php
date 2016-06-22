@@ -26,7 +26,7 @@ class Config
         } else {
             array_shift($parameters);
             foreach ($parameters as $p) {
-                $config = $config[$p];
+                $config = isset($config[$p]) ? $config[$p] : null;
             }
             return $config;
         }
