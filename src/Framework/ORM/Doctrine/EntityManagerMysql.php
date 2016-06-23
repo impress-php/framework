@@ -7,6 +7,12 @@ use Doctrine\ORM\EntityManager;
 
 class EntityManagerMysql
 {
+    /**
+     * @param string $configItem
+     * @param EventManager|null $eventManager
+     * @return EntityManager
+     * @throws \Doctrine\ORM\ORMException
+     */
     public static function create($configItem = 'master', EventManager $eventManager = null)
     {
         switch (true) {
