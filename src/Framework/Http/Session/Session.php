@@ -85,7 +85,7 @@ class Session extends VendorSession
                 break;
         }
 
-        $optionsStorage = $optionsStorage ?: config(getenv("SESSION_OPTIONS"));
+        $optionsStorage = array_merge(config(getenv("SESSION_OPTIONS")), $optionsStorage);
         $storage = $storage ?: new NativeSessionStorage($optionsStorage, $handler);
         $attributes = $attributes ?: new AttributeBag("_ips_attributes");
         parent::__construct($storage, $attributes, $flashes);

@@ -9,8 +9,7 @@ class Worker extends \Workerman\Worker
 
     public static function runAll($AppName = null)
     {
-        self::$AppName = $AppName;
-        self::$AppName || self::$AppName = "workerman";
+        self::$AppName = $AppName ?: "workerman";
 
         static::$logFile = self::workermanTempFile(self::FILE_TYPE_LOG);
         static::$pidFile = self::workermanTempFile(self::FILE_TYPE_PID);
