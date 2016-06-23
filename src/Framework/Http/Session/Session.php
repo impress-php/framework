@@ -17,13 +17,9 @@ class Session extends VendorSession
 {
     /**
      * Session constructor.
-     * @param String $driver
-     * @param array $optionsHandler
-     * prefix
-     * expiretime
-     *
-     * @param array $optionsStorage
-     *
+     * @param array|String $options
+     * ***********************************************************************************
+     * #------------- [options] -------------#
      * List of options for $options array with their defaults.
      *
      * @see http://php.net/session.configuration for options
@@ -59,16 +55,30 @@ class Session extends VendorSession
      * upload_progress.min-freq, "1"
      * url_rewriter.tags, "a=href,area=href,frame=src,form=,fieldset="
      *
-     * @param SessionStorageInterface|null $storage
-     * @param AttributeBagInterface|null $attributes
-     * @param FlashBagInterface|null $flashes
+     *
+     * #------------- [handler] -------------#
+     * prefix, "sid_"
+     * expiretime, 86400
+     * ***********************************************************************************
+     *
+     * @param null|String $driver
+     * @param null|string $driverConfig
      */
-    public function __construct($driver, array $optionsHandler = array(), array $optionsStorage = array(), SessionStorageInterface $storage = null, AttributeBagInterface $attributes = null, FlashBagInterface $flashes = null)
+    public function __construct($options, $driver = null, $driverConfig = null)
     {
-        $optionsHandler = $optionsHandler ?: [
-            'prefix' => env("SESSION_ID_PREFIX", 'sid_'),
-            'expiretime' => env("SESSION_DEFAULT_EXPIRE", 86400)
-        ];
+        is_string($options) && $options = config($options);
+
+        $options = $options ?: config(env("SESSION_DEFAULT_OPTIONS"));
+
+        if (!$options || !$options['handler'] || !$options['options']) {
+            throw new \RuntimeException("Invalid options: " . var_export($options, true));
+        }
+
+        $driver = $driver ?: env("SESSION_DRIVER", 'file');
+        $driverConfig = $driverConfig ?: env("SESSION_DRIVER_CONFIG");
+
+        $optionsHandler = $options['handler'];
+
         switch ($driver = strtolower($driver)) {
             case 'redis':
             case 'predis':
@@ -78,37 +88,37 @@ class Session extends VendorSession
             case 'mongo':
             case 'pdo':
             case 'file':
-                $handler = call_user_func_array([$this, "{$driver}SessionHandler"], [$optionsHandler]);
+                $handler = call_user_func_array([$this, "{$driver}SessionHandler"], [$driverConfig, $optionsHandler]);
                 break;
             default:
                 throw new \RuntimeException("The session driver not support.");
                 break;
         }
 
-        $optionsStorage = array_merge(config(getenv("SESSION_OPTIONS")), $optionsStorage);
-        $storage = $storage ?: new NativeSessionStorage($optionsStorage, $handler);
-        $attributes = $attributes ?: new AttributeBag("_ips_attributes");
-        parent::__construct($storage, $attributes, $flashes);
+        $optionsStorage = $options['options'];
+        $storage = new NativeSessionStorage($optionsStorage, $handler);
+        $attributes = new AttributeBag("_ips_attributes");
+        parent::__construct($storage, $attributes);
     }
 
-    private function fileSessionHandler($optionsHandler)
+    private function fileSessionHandler($driverConfig, $optionsHandler)
     {
         $handler = new NativeFileSessionHandler(SESSIONS_DIR);
         return $handler;
     }
 
-    private function memcachedSessionHandler($optionsHandler)
+    private function memcachedSessionHandler($driverConfig, $optionsHandler)
     {
         $mc = new Memcached();
-        $mc->connect();
+        $mc->connect($driverConfig);
         $handler = new MemcachedSessionHandler($mc, $optionsHandler);
         return $handler;
     }
 
-    private function redisSessionHandler($optionsHandler)
+    private function redisSessionHandler($driverConfig, $optionsHandler)
     {
         $redis = new Redis();
-        $redis->connect();
+        $redis->connect($driverConfig);
         $handler = new RedisSessionHandler($redis, $optionsHandler);
         return $handler;
     }

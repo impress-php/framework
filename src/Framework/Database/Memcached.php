@@ -5,9 +5,12 @@ use \Memcached as MC;
 
 class Memcached extends MC
 {
-    public function connect($configItem = 'default')
+    public function connect($configItem = 'database.memcached.default')
     {
-        $this->setOptions(config("database.memcached.{$configItem}.options"));
-        $this->addServers(config("database.memcached.{$configItem}.servers"));
+        $options = config("{$configItem}.options", []);
+        !empty($options) && $this->setOptions($options);
+
+        $servers = config("{$configItem}.servers", []);
+        !empty($servers) && $this->addServers($servers);
     }
 }

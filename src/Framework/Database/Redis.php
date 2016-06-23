@@ -5,17 +5,23 @@ use \Redis as R;
 
 class Redis extends R
 {
-    public function connect($configItem = 'default')
+    public function connect($configItem = 'database.redis.default')
     {
-        $host = config("database.redis.{$configItem}.host", '127.0.0.1');
-        $port = config("database.redis.{$configItem}.port", 6379);
-        $timeout = config("database.redis.{$configItem}.timeout", 0);
+        $config = config($configItem);
+        if (!$config) {
+            return;
+        }
+
+        $host = (isset($config['host'])) ? $config['host'] : '127.0.0.1';
+        $port = (isset($config['port'])) ? $config['port'] : 6379;
+        $timeout = (isset($config['timeout'])) ? $config['timeout'] : 0;
 
         parent::connect($host, $port, $timeout);
 
-        $options = config("database.redis.{$configItem}.options");
+        $options = $config['options'];
         (is_array($options) && !empty($options)) && $this->setOptions($options);
-        $auth = config("database.redis.{$configItem}.auth");
+
+        $auth = $config['auth'];
         $auth && parent::auth($auth);
     }
 

@@ -12,13 +12,13 @@ class Response extends VendorResponse
         $this->setContent($content);
         $this->setStatusCode($statusCode);
         $this->headers->add($headers);
+        return $this;
     }
 
     public function view($name, array $data = array(), $statusCode = 200, array $headers = array(), $engine = View::ENGINE_AUTO)
     {
         $content = View::make($name, $data, $engine);
-        $this->raw($content, $statusCode, $headers);
-        return $this;
+        return $this->raw($content, $statusCode, $headers);
     }
 
     public function json(array $data, $statusCode = 200, array $headers = [
@@ -26,8 +26,7 @@ class Response extends VendorResponse
     ])
     {
         $content = json_encode($data);
-        $this->raw($content, $statusCode, $headers);
-        return $this;
+        return $this->raw($content, $statusCode, $headers);
     }
 
     public function redirect($uri, $statusCode = 302, array $headers = [])
