@@ -19,7 +19,8 @@
         "symfony/debug" : "~3.0",
         "vlucas/phpdotenv" : "~2.2",
         "danielstjules/stringy" : "~2.3.2",
-        "doctrine/orm" : "~2.5.0"
+        "doctrine/orm" : "~2.5.0",
+        "phpseclib/phpseclib" : "~2.0.2"
     },
     "autoload": {
         "psr-4": {
