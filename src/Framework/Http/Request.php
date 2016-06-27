@@ -32,4 +32,12 @@ class Request extends VendorRequest
     {
         self::$staticRequest = null;
     }
+
+    public function getCookie($name)
+    {
+        if (!is_null($cookieValue = $this->cookies->get($name))) {
+            return Cookie::decryptCookieValue($cookieValue);
+        }
+        return null;
+    }
 }

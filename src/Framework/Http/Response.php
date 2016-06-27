@@ -1,7 +1,6 @@
 <?php
 namespace Impress\Framework\Http;
 
-use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response as VendorResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
@@ -62,6 +61,7 @@ class Response extends VendorResponse
      */
     public function setCookie($name, $value = null, $expire = 0, $path = '/', $domain = null, $secure = false, $httpOnly = true, $raw = false)
     {
+        $domain = $domain ?: env("COOKIE_DOMAIN", null);
         $cookie = new Cookie($name, $value, $expire, $path, $domain, $secure, $httpOnly, $raw);
         $this->headers->setCookie($cookie);
     }
