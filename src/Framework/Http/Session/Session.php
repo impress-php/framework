@@ -61,10 +61,11 @@ class Session extends VendorSession
      * expiretime, 86400
      * ***********************************************************************************
      *
+     * @param boolean $createNew Create new session id, destroy old session from cookie and storage.
      * @param null|String $driver
      * @param null|string $driverConfig
      */
-    public function __construct($options, $driver = null, $driverConfig = null)
+    public function __construct($options, $createNew = false, $driver = null, $driverConfig = null)
     {
         is_string($options) && $options = config($options);
 
@@ -98,6 +99,16 @@ class Session extends VendorSession
         $optionsStorage = $options['options'];
         $storage = new NativeSessionStorage($optionsStorage, $handler);
         $attributes = new AttributeBag("_ips_attributes");
+
+        if ($createNew) {
+            $session_name = isset($options['options']['name']) ? $options['options']['name'] : "PHPSESSID";
+            if (isset($_COOKIE[$session_name])) {
+                $old_session_id = $_COOKIE[$session_name];
+                $_COOKIE[$session_name] = null;
+                @$storage->getSaveHandler()->destroy($old_session_id);
+            }
+        }
+
         parent::__construct($storage, $attributes);
     }
 

@@ -40,10 +40,10 @@ class Controller
         return $request->getSession();
     }
 
-    public function session_start($options = null, $driver = null, $driverConfig = null, $request = null)
+    public function session_start($options = null, $createNew = false, $driver = null, $driverConfig = null, $request = null)
     {
         $request = $request ?: $this->request();
-        $session = new Session($options, $driver, $driverConfig);
+        $session = new Session($options, $createNew, $driver, $driverConfig);
         $request->setSession($session);
         session_start();
     }
