@@ -118,6 +118,22 @@ class Route
         return self::add($path, $controllerFunc, "post", $middleware, $prefix, $routeName, $host, $schemes);
     }
 
+    public static function controllers(array $controllerClassNames, array $middleware = array(), $prefix = '', $routeName = '', $host = '', $schemes = array())
+    {
+        if (!$controllerClassNames) {
+            return null;
+        }
+
+        $routes = array();
+        foreach ($controllerClassNames as $controllerClassName) {
+            $routes = array_merge(
+                $routes,
+                self::controller($controllerClassName, $middleware, $prefix, $routeName, $host, $schemes)
+            );
+        }
+        return $routes;
+    }
+
     public static function controller($controllerClassName, array $middleware = array(), $prefix = '', $routeName = '', $host = '', $schemes = array())
     {
         $class = "\\App\\Http\\Controllers\\" . $controllerClassName;
