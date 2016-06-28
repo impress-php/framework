@@ -118,6 +118,39 @@ class Route
         return self::add($path, $controllerFunc, "post", $middleware, $prefix, $routeName, $host, $schemes);
     }
 
+    public static function controller($controllerClassName, array $middleware = array(), $prefix = '', $routeName = '', $host = '', $schemes = array())
+    {
+        $class = "\\App\\Http\\Controllers\\" . $controllerClassName;
+        $classMethods = get_class_methods($class);
+        if (is_null($classMethods)) return null;
+
+        $diffClassMethods = array_merge(
+            (get_class_methods('\Impress\Framework\Http\Controller') ?: []),
+            (get_class_methods(get_parent_class($classMethods)) ?: []),
+            ['__construct']
+        );
+        $classMethods = array_unique(array_diff($classMethods, $diffClassMethods));
+        if (!$classMethods) return null;
+
+        $routes = array();
+        foreach ($classMethods as $m) {
+            if (!preg_match('/([a-z])/', substr($m, 0, 1))) {
+                continue;
+            }
+            $methodStr = trim(strtolower(preg_replace('/([A-Z])/', '_$1', $m)), '_');
+            if (($pos = strpos($methodStr, "_")) === false) {
+                continue;
+            }
+            $method = strtolower(substr($methodStr, 0, $pos));
+            $method = $method == "all" ? [] : $method;
+            $path = substr($methodStr, $pos + 1);
+            $controllerFunc = "{$controllerClassName}@{$m}";
+
+            $routes[] = self::add($path, $controllerFunc, $method, $middleware, $prefix, $routeName, $host, $schemes);
+        }
+        return $routes;
+    }
+
     public static function group(array $attributes, \Closure $callable)
     {
         self::$groupAttributesKey++;

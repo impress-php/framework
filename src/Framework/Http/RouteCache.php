@@ -13,6 +13,7 @@ class RouteCache
         try {
             $s = serialize($routes);
         } catch (\Exception $e) {
+            // todo: We could be create a log. ['Serialization of 'Closure' is not allowed']
             return false;
         }
 
