@@ -81,7 +81,7 @@ class Route
         return self::addRoute(
             $path,
             array(
-                'controllerFunc' => $controllerFunc,
+                'controllerFunc' => trim($controllerFunc, "\\"),
                 'prefix' => $prefix,
                 'name' => $routeName,
                 'middleware' => $middleware
@@ -118,6 +118,7 @@ class Route
         return self::add($path, $controllerFunc, "post", $middleware, $prefix, $routeName, $host, $schemes);
     }
 
+    /* There has already had Route::group.
     public static function controllers(array $controllerClassNames, array $middleware = array(), $prefix = '', $routeName = '', $host = '', $schemes = array())
     {
         if (!$controllerClassNames) {
@@ -133,9 +134,11 @@ class Route
         }
         return $routes;
     }
+    */
 
     public static function controller($controllerClassName, array $middleware = array(), $prefix = '', $routeName = '', $host = '', $schemes = array())
     {
+        $controllerClassName = trim($controllerClassName, "\\");
         $class = "\\App\\Http\\Controllers\\" . $controllerClassName;
         $classMethods = get_class_methods($class);
         if (is_null($classMethods)) return null;
@@ -160,6 +163,7 @@ class Route
             $method = strtolower(substr($methodStr, 0, $pos));
             $method = $method == "all" ? [] : $method;
             $path = substr($methodStr, $pos + 1);
+            $path = rtrim($path, "index");
             $controllerFunc = "{$controllerClassName}@{$m}";
 
             $routes[] = self::add($path, $controllerFunc, $method, $middleware, $prefix, $routeName, $host, $schemes);
