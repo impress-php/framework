@@ -81,7 +81,7 @@ class Route
         return self::addRoute(
             $path,
             array(
-                'controllerFunc' => trim($controllerFunc, "\\"),
+                'controllerFunc' => is_string($controllerFunc) ? trim($controllerFunc, "\\") : $controllerFunc,
                 'prefix' => $prefix,
                 'name' => $routeName,
                 'middleware' => $middleware
@@ -94,6 +94,7 @@ class Route
         );
     }
 
+    /* There has already had __callStatic.
     public static function get($path, $controllerFunc, array $middleware = array(), $prefix = '', $routeName = '', $host = '', $schemes = array())
     {
         if (is_array($path)) {
@@ -116,6 +117,28 @@ class Route
         }
 
         return self::add($path, $controllerFunc, "post", $middleware, $prefix, $routeName, $host, $schemes);
+    }
+    */
+
+    public static function __callStatic($name, $arguments)
+    {
+        $path           =   $arguments[0];
+        $controllerFunc =   $arguments[1];
+        $middleware     =   isset($arguments[2]) ? $arguments[2] : array();
+        $prefix         =   isset($arguments[3]) ? $arguments[3] : '';
+        $routeName      =   isset($arguments[4]) ? $arguments[4] : '';
+        $host           =   isset($arguments[5]) ? $arguments[5] : '';
+        $schemes        =   isset($arguments[6]) ? $arguments[6] : array();
+
+        $method         =   $name;
+        if (is_array($path)) {
+            foreach ($path as &$r) {
+                $r['methods'] = $method;
+                unset($r);
+            }
+        }
+
+        return self::add($path, $controllerFunc, $method, $middleware, $prefix, $routeName, $host, $schemes);
     }
 
     /* There has already had Route::group.
