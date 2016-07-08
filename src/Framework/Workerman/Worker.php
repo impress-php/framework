@@ -22,14 +22,14 @@ class Worker extends \Workerman\Worker
         $filename = null;
         switch ($type) {
             case self::FILE_TYPE_PID:
-                $filename = PID_DIR . DIRECTORY_SEPARATOR . "workerman" . DIRECTORY_SEPARATOR . self::$AppName . ".pid";
+                $filename = storage_path('pid') . DIRECTORY_SEPARATOR . "workerman" . DIRECTORY_SEPARATOR . self::$AppName . ".pid";
                 break;
             case self::FILE_TYPE_STDOUT:
-                $filename = LOG_DIR . DIRECTORY_SEPARATOR . "workerman" . DIRECTORY_SEPARATOR . self::$AppName . ".stdout.log";
+                $filename = storage_path('logs') . DIRECTORY_SEPARATOR . "workerman" . DIRECTORY_SEPARATOR . self::$AppName . ".stdout.log";
                 break;
             case self::FILE_TYPE_LOG:
             default:
-                $filename = LOG_DIR . DIRECTORY_SEPARATOR . "workerman" . DIRECTORY_SEPARATOR . self::$AppName . ".log";
+                $filename = storage_path('logs') . DIRECTORY_SEPARATOR . "workerman" . DIRECTORY_SEPARATOR . self::$AppName . ".log";
                 break;
         }
         if (is_null($filename))

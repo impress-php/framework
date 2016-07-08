@@ -114,7 +114,7 @@ class Session extends VendorSession
 
     private function fileSessionHandler($driverConfig, $optionsHandler)
     {
-        $handler = new NativeFileSessionHandler(SESSIONS_DIR);
+        $handler = new NativeFileSessionHandler(storage_path("sessions"));
         return $handler;
     }
 

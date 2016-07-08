@@ -11,8 +11,8 @@ class View
     const ENGINE_TWIG = 1;
     const ENGINE_SYMFONY = 2;
 
-    public static $VIEWS_DIR = VIEWS_DIR;
-    public static $CACHE_VIEWS_DIR = CACHE_VIEWS_DIR;
+    public static $VIEWS_DIR;
+    public static $CACHE_VIEWS_DIR;
 
     public static $TWIG_OPTION_DEBUG;
     public static $TWIG_OPTION_AUTO_RELOAD;
@@ -39,6 +39,8 @@ class View
 
         $content = "";
 
+        is_null(self::$VIEWS_DIR) && self::$VIEWS_DIR = resources_path("views");
+
         switch ($engine) {
             case self::ENGINE_SYMFONY:
                 $loader = new FilesystemLoader(self::$VIEWS_DIR . DIRECTORY_SEPARATOR . "%name%");
@@ -48,7 +50,7 @@ class View
             case self::ENGINE_TWIG:
                 $loader = new \Twig_Loader_Filesystem(self::$VIEWS_DIR);
                 $twig = new \Twig_Environment($loader, array(
-                    'cache' => self::$CACHE_VIEWS_DIR,
+                    'cache' => self::$CACHE_VIEWS_DIR ?: storage_path("cache" . DIRECTORY_SEPARATOR . "views"),
                     'auto_reload' => self::$TWIG_OPTION_AUTO_RELOAD,
                     'debug' => self::$TWIG_OPTION_DEBUG,
                     'charset' => self::$TWIG_OPTION_CHARSET

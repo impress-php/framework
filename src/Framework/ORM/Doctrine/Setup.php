@@ -9,7 +9,7 @@ class Setup
     {
         $isDevMode = config("database.doctrine.isDevMode", false);
         $paths = config("database.doctrine.paths", [
-            dirname(HTTP_DIR) . DIRECTORY_SEPARATOR . "Model" . DIRECTORY_SEPARATOR . "doctrineEntities"
+            app_path("Model") . DIRECTORY_SEPARATOR . "doctrineEntities"
         ]);
         if (!$paths) {
             throw new \RuntimeException("Invalid paths: " . $paths);

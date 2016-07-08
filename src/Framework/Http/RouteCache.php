@@ -3,9 +3,17 @@ namespace Impress\Framework\Http;
 
 class RouteCache
 {
-    const ROUTES_CACHE_FILENAME = CACHE_DIR . DIRECTORY_SEPARATOR . "Routes.php";
+    private static $routesCacheFilename;
 
     private static $cacheRoutesContent;
+
+    private static function getRoutesCacheFilename()
+    {
+        if (is_null(self::$routesCacheFilename)) {
+            self::$routesCacheFilename = storage_path('cache' . DIRECTORY_SEPARATOR . 'Routes.php');
+        }
+        return self::$routesCacheFilename;
+    }
 
     private static function cacheContent()
     {
@@ -35,7 +43,7 @@ class RouteCache
 
     private static function isFromCache()
     {
-        $file = self::ROUTES_CACHE_FILENAME;
+        $file = self::getRoutesCacheFilename();
         if (!is_file($file)) {
             return false;
         }
@@ -62,7 +70,7 @@ class RouteCache
         if (!$cacheContent) {
             return;
         }
-        file_put_contents(self::ROUTES_CACHE_FILENAME, $cacheContent);
+        file_put_contents(self::getRoutesCacheFilename(), $cacheContent);
     }
 
     public static function makeRoutes()
@@ -70,7 +78,7 @@ class RouteCache
         $routesFile = Bootstrap::getRoutesFile();
         if (!self::isFromCache()) {
             if (is_file($routesFile)) {
-                @unlink(self::ROUTES_CACHE_FILENAME);
+                @unlink(self::getRoutesCacheFilename());
                 require_once($routesFile);
                 self::writeCacheFile();
             }

@@ -9,9 +9,9 @@ class Config
     {
         if (is_null(self::$dir)) {
             $env = env("ENV", "production");
-            self::$dir = CONFIG_DIR . DIRECTORY_SEPARATOR . $env;
+            self::$dir = config_path($env);
             if (!is_dir(self::$dir)) {
-                self::$dir = CONFIG_DIR;
+                self::$dir = config_path();
             }
         }
 

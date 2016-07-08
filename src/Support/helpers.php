@@ -69,3 +69,38 @@ if (!function_exists('value')) {
         return $value instanceof Closure ? $value() : $value;
     }
 }
+
+function root_path($path = '')
+{
+    return IMPRESS_PHP_ROOT_PATH . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+}
+
+function vendor_path($path = '')
+{
+    return root_path("vendor") . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+}
+
+function config_path($path = '')
+{
+    return root_path("config") . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+}
+
+function public_path($path = '')
+{
+    return root_path("public") . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+}
+
+function resources_path($path = '')
+{
+    return root_path("resources") . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+}
+
+function storage_path($path = '')
+{
+    return root_path("storage") . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+}
+
+function app_path($path = '')
+{
+    return root_path("app") . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+}

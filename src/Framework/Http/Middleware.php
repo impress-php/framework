@@ -3,7 +3,6 @@ namespace Impress\Framework\Http;
 
 class Middleware
 {
-    private static $middlewareMapFile = HTTP_DIR . DIRECTORY_SEPARATOR . "middleware.php";
     private static $middlewares = array();
     private static $map;
 
@@ -28,12 +27,14 @@ class Middleware
 
     private static function getMiddlewareFromMap($middlewares)
     {
+        $middlewareMapFile = app_path("Http" . DIRECTORY_SEPARATOR . "middleware.php");
+
         if (is_null(self::$map)) {
-            is_file(self::$middlewareMapFile) && self::$map = require_once(self::$middlewareMapFile);
+            is_file($middlewareMapFile) && self::$map = require_once($middlewareMapFile);
         }
         if (!isset(self::$map[$middlewares])) {
             return null;
-            throw new \RuntimeException("The middleware '{$middlewares}' can not found in map file [" . self::$middlewareMapFile . "].");
+            throw new \RuntimeException("The middleware '{$middlewares}' can not found in map file [" . $middlewareMapFile . "].");
         }
         return self::$map[$middlewares];
     }
