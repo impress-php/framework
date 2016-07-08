@@ -3,10 +3,19 @@ namespace Impress\Framework\Config;
 class Config
 {
     private static $configs;
+    private static $dir;
 
     private static function init_configs($file)
     {
-        $filename = CONFIG_DIR . DIRECTORY_SEPARATOR . $file . ".php";
+        if (is_null(self::$dir)) {
+            $env = env("ENV", "production");
+            self::$dir = CONFIG_DIR . DIRECTORY_SEPARATOR . $env;
+            if (!is_dir(self::$dir)) {
+                self::$dir = CONFIG_DIR;
+            }
+        }
+
+        $filename = self::$dir . DIRECTORY_SEPARATOR . $file . ".php";
         is_file($filename) && self::$configs[$file] = require_once($filename);
     }
 
