@@ -164,6 +164,10 @@ class RouteMatch
         return self::$routes;
     }
 
+    /**
+     * @param $routeName
+     * @return SymfonyRoute
+     */
     public static function getRoute($routeName)
     {
         return self::$routes[$routeName]['route'];
