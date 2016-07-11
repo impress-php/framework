@@ -24,15 +24,15 @@ class HttpBootstrap
         $RouteMatch = new RouteMatch(self::$routesFile);
 
         $parameters = $RouteMatch->work();
-        $routeControllerFunc = $RouteMatch->getController($parameters);
+        $routeController = $RouteMatch->getController($parameters);
 
-        if (is_callable($routeControllerFunc)) {
-            $return = call_user_func($routeControllerFunc);
+        if (is_callable($routeController)) {
+            $return = call_user_func($routeController);
             $this->setResponseContent($return);
         } else {
-            $atPos = strpos($routeControllerFunc, "@");
-            $className = substr($routeControllerFunc, 0, $atPos);
-            $methodName = substr($routeControllerFunc, $atPos + 1);
+            $atPos = strpos($routeController, "@");
+            $className = substr($routeController, 0, $atPos);
+            $methodName = substr($routeController, $atPos + 1);
 
             $calssPosition = "\\App\\Http\\Controllers\\" . $className;
             $class = new $calssPosition();
