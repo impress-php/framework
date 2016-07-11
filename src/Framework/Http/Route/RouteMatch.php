@@ -1,7 +1,7 @@
 <?php
 namespace Impress\Framework\Http\Route;
 
-class RouteMatcher
+class RouteMatch
 {
     private static $routesFile;
 
