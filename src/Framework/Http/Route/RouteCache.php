@@ -68,13 +68,12 @@ class RouteCache
         if (!$cacheContent) {
             return;
         }
-        file_put_contents(self::getRoutesCacheFilename(), $cacheContent);
+        write_file(self::getRoutesCacheFilename(), $cacheContent);
     }
 
     private static function workRoute($routesFile)
     {
         if (is_file($routesFile)) {
-            self::deleteRoutesCacheFile();
             require_once($routesFile);
             return true;
         } else {
@@ -94,11 +93,6 @@ class RouteCache
             }
         }
         return false;
-    }
-
-    private static function deleteRoutesCacheFile()
-    {
-        is_file(self::getRoutesCacheFilename()) && @unlink(self::getRoutesCacheFilename());
     }
 
     public static function work($routesFile)

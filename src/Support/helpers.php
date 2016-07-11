@@ -84,6 +84,25 @@ if (!function_exists('get_array_item')) {
     }
 }
 
+if (!function_exists('write_file')) {
+    /**
+     * @param $filename
+     * @param $content
+     * @return bool
+     */
+    function write_file($filename, $content)
+    {
+        if (!is_file($filename)) {
+            return boolval(file_put_contents($filename, $content));
+        } else {
+            $filename_tmp = storage_path('cache') . DIRECTORY_SEPARATOR . Str::guid() . '.tmp';
+            $write = file_put_contents($filename_tmp, $content);
+            $move = rename($filename_tmp, $filename);
+            return boolval($write && $move);
+        }
+    }
+}
+
 function root_path($path = '')
 {
     return IMPRESS_PHP_ROOT_PATH . ($path ? DIRECTORY_SEPARATOR . $path : $path);

@@ -223,13 +223,13 @@ class Str
 
     /**
      * Create a guid
-     * @param bool $format
+     * @param bool $isFormat
      * @return string
      */
-    public static function guid($format = false)
+    public static function guid($isFormat = false)
     {
         $uuid = md5(uniqid(mt_rand(), true));
-        if (!$format) {
+        if (!$isFormat) {
             return $uuid;
         }
         $charid = strtoupper($uuid);
