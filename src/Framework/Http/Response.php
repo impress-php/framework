@@ -1,6 +1,7 @@
 <?php
 namespace Impress\Framework\Http;
 
+use Impress\Framework\Http\Route\RouteMatch;
 use Symfony\Component\HttpFoundation\Response as VendorResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
@@ -40,7 +41,7 @@ class Response extends VendorResponse
 
     public function redirectRoute($routeName, $statusCode = 302, array $headers = [])
     {
-        $route = Route::getRoute($routeName);
+        $route = RouteMatch::getRoute($routeName);
         $uri = $route->getPath();
         return $this->redirect($uri, $statusCode, $headers);
     }
