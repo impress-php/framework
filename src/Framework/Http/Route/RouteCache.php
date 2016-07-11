@@ -74,6 +74,7 @@ class RouteCache
     private static function workRoute($routesFile)
     {
         if (is_file($routesFile)) {
+            @unlink(self::getRoutesCacheFilename());
             require_once($routesFile);
             return true;
         } else {
@@ -86,7 +87,6 @@ class RouteCache
         if (!self::isFromCache($routesFile)) {
             if (is_file($routesFile)) {
                 self::workRoute($routesFile);
-                @unlink(self::getRoutesCacheFilename());
                 self::writeCacheFile($routesFile);
                 return true;
             } else {

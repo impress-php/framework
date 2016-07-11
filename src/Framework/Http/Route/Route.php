@@ -91,6 +91,14 @@ class Route
             $path = rtrim($path, "index");
             $controller = "{$controllerClassName}@{$m}";
 
+            //name
+            if (isset($options['name']) || isset($options['as'])) {
+                if (isset($options['as'])) {
+                    $options['name'] = $options['as'];
+                }
+                $options['name'] = $options['name'] . "@{$m}";
+            }
+
             $routes[] = RouteMatch::addRoute(self::makeRouteMatchOptions($path, $controller, $method, $options));
         }
         return $routes;
