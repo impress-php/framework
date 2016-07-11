@@ -3,22 +3,53 @@ namespace Impress\Framework\Http\Route;
 
 class Route
 {
+    private static $groupOptionsKey = 0;
+    private static $groupOptions = array();
+
     private static function makeRouteMatchOptions($path, $controller, $method, $options)
     {
-        $_options = [
-            RouteMatch::ROUTE_PARAMETER_PREFIX . 'path' => $path,
-            RouteMatch::ROUTE_PARAMETER_PREFIX . 'controller' => $controller
-        ];
+        is_null($options) && $options = [];
+
+        // method
+        if ($method == 'any' || $method == 'all') {
+            $method = [];
+        }
+        $options['methods'] = $method;
+
+        // middleware
+        if (isset($options['middleware'])) {
+            if (!is_array($options['middleware'])) {
+                $options['middleware'] = [$options['middleware']];
+            }
+        }
+
+        // group:
+        if (!empty(self::$groupOptions)) {
+            $prefix_arr = array();
+            foreach (self::$groupOptions as $ga) {
+                if (isset($ga['prefix'])) {
+                    array_push($prefix_arr, $ga['prefix']);
+                }
+
+                if (isset($ga['middleware'])) {
+                    $options['middleware'] = array_merge($ga['middleware'], isset($options['middleware']) ? $options['middleware'] : []);
+                }
+            }
+            $path = implode("", $prefix_arr) . (!empty($path) ? $path : '');
+        }
+
+        // assemble options
+        $options['path'] = $path;
+        $options['controller'] = $controller;
+        isset($options['middleware']) && $options['middleware'] = array_unique($options['middleware']);
+
+        // // assemble _options
+        $_options = [];
         foreach ($options as $k => $v) {
             $_options[RouteMatch::ROUTE_PARAMETER_PREFIX . $k] = $v;
         }
         unset($options);
 
-        if ($method == 'any' || $method == 'all') {
-            $method = [];
-        }
-
-        $_options[RouteMatch::ROUTE_PARAMETER_PREFIX . 'methods'] = $method;
         return $_options;
     }
 
@@ -41,7 +72,7 @@ class Route
         $diffClassMethods = array_merge(
             (get_class_methods('\Impress\Framework\Http\Controller') ?: []),
             (get_class_methods(get_parent_class($classMethods)) ?: []),
-            ['__construct']
+            ['__construct', '__destruct', '__clone', '__get', '__set', '__call', '__callStatic', '__sleep', '__wakeup', '__clone']
         );
         $classMethods = array_unique(array_diff($classMethods, $diffClassMethods));
         if (!$classMethods) return null;
@@ -63,5 +94,13 @@ class Route
             $routes[] = RouteMatch::addRoute(self::makeRouteMatchOptions($path, $controller, $method, $options));
         }
         return $routes;
+    }
+
+    public static function group(array $options, \Closure $callable)
+    {
+        self::$groupOptionsKey++;
+        self::$groupOptions[self::$groupOptionsKey] = $options;
+        call_user_func($callable);
+        unset(self::$groupOptions[self::$groupOptionsKey]);
     }
 }

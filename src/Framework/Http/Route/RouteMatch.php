@@ -77,7 +77,6 @@ class RouteMatch
     {
         foreach ([
                      'controller',
-                     'prefix',
                      'middleware',
                      'name',
                      'as',
@@ -97,7 +96,6 @@ class RouteMatch
                     $default_value = '';
                     break;
                 case 'controller':
-                case 'prefix':
                 case 'middleware':
                 case 'name':
                 case 'as':
@@ -113,22 +111,26 @@ class RouteMatch
             if (!isset($name) && isset($as)) {
                 $name = $as;
             }
-            if (isset($middleware)) {
-                if (!is_array($middleware)) {
-                    $middleware = [$middleware];
-                }
+            if (isset($path)) {
+                $path = strtr($path, [
+                    '//' => '/'
+                ]);
             }
         }
 
         $defaults = [
             self::ROUTE_PARAMETER_PREFIX . 'controller' => $controller,
-            self::ROUTE_PARAMETER_PREFIX . 'prefix' => $prefix,
             self::ROUTE_PARAMETER_PREFIX . 'middleware' => $middleware
         ];
 
         $route = new SymfonyRoute($path, $defaults, $requirements, $options, $host, $schemes, $methods, $condition);
 
         $name = self::autoRouteName($name);
+
+        if (isset(self::$routes[$name])) {
+            throw new \RuntimeException("The route name '{$name}' already exists.");
+        }
+
         $_route = array(
             self::ROUTES_KEY_ROUTE => $route,
             self::ROUTES_KEY_ROUTE_NAME => $name
@@ -140,8 +142,11 @@ class RouteMatch
 
     private static function autoRouteName($name)
     {
-        self::$route_name_autoincrement++;
-        return is_null($name) ? self::ROUTE_AUTO_NAME_PREFIX . self::$route_name_autoincrement : $name;
+        if (is_null($name)) {
+            self::$route_name_autoincrement++;
+            return self::ROUTE_AUTO_NAME_PREFIX . self::$route_name_autoincrement;
+        }
+        return $name;
     }
 
     public static function clearRoutes()
