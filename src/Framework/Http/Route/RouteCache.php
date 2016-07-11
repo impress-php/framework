@@ -17,7 +17,7 @@ class RouteCache
 
     private static function cacheContent($routesFile)
     {
-        $routes = Route::getRoutes();
+        $routes = RouteMatch::getRoutes();
         try {
             $s = serialize($routes);
         } catch (\Exception $e) {
@@ -101,7 +101,7 @@ class RouteCache
         if (env("ROUTES_NO_CACHE", false)) {
             self::workRoute($routesFile);
         } else {
-            self::makeCache($routesFile) ?: Route::setRoutes(self::$cacheRoutesContent);
+            self::makeCache($routesFile) ?: RouteMatch::setRoutes(self::$cacheRoutesContent);
         }
     }
 }

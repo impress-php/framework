@@ -1,6 +1,8 @@
 <?php
 namespace Impress\Framework\Http;
 
+use Impress\Framework\Http\Route\RouteMatch;
+
 class HttpBootstrap
 {
     private static $routesFile;
@@ -19,10 +21,10 @@ class HttpBootstrap
 
     private function httpWork()
     {
+        $RouteMatch = new RouteMatch(self::$routesFile);
 
-        $parameters = Route::work();
-        $routeControllerFunc = $parameters['controllerFunc'];
-        $routeMiddleware = $parameters['middleware'];
+        $parameters = $RouteMatch->work();
+        $routeControllerFunc = $RouteMatch->getController($parameters);
 
         if (is_callable($routeControllerFunc)) {
             $return = call_user_func($routeControllerFunc);
@@ -36,6 +38,7 @@ class HttpBootstrap
             $class = new $calssPosition();
 
             // Middleware
+            $routeMiddleware = $RouteMatch->getMiddleware($parameters);
             if ($routeMiddleware) {
                 call_user_func_array([$class, 'middleware'], $routeMiddleware);
             }

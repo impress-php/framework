@@ -56,7 +56,6 @@ if (!function_exists('env')) {
     }
 }
 
-
 if (!function_exists('value')) {
     /**
      * Return the default value of the given value.
@@ -67,6 +66,21 @@ if (!function_exists('value')) {
     function value($value)
     {
         return $value instanceof Closure ? $value() : $value;
+    }
+}
+
+if (!function_exists('get_array_item')) {
+    /**
+     * Return the default item of the array.
+     *
+     * @param  array $arr
+     * @param  mixed $key
+     * @param  mixed $default
+     * @return mixed
+     */
+    function get_array_item(array $arr, $key, $default = null)
+    {
+        return isset($arr[$key]) ? $arr[$key] : $default;
     }
 }
 
