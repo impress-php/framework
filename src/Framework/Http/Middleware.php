@@ -1,7 +1,7 @@
 <?php
 namespace Impress\Framework\Http;
 
-class Middleware
+abstract class Middleware extends Controller implements MiddlewareInterface
 {
     private static $middlewares = array();
     private static $map;
@@ -44,7 +44,7 @@ class Middleware
         return self::$middlewares;
     }
 
-    public static function handle()
+    public static function work()
     {
         self::$middlewares = self::getMiddlewares();
         if (!empty(self::$middlewares)) {
@@ -58,4 +58,6 @@ class Middleware
         }
         return true;
     }
+
+    abstract public function handle();
 }

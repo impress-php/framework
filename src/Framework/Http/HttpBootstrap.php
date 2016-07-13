@@ -42,7 +42,7 @@ class HttpBootstrap
             if ($routeMiddleware) {
                 call_user_func_array([$class, 'middleware'], $routeMiddleware);
             }
-            $return = Middleware::handle();
+            $return = Middleware::work();
 
             is_bool($return) && $return = call_user_func_array([$class, $methodName], array());
             $this->setResponseContent($return);
