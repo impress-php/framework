@@ -1,5 +1,5 @@
 <?php
-namespace Impress\Framework\Http;
+namespace Impress\Framework\Http\Middleware;
 
 
 interface MiddlewareInterface

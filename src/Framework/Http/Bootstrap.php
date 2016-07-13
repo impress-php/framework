@@ -2,8 +2,9 @@
 namespace Impress\Framework\Http;
 
 use Impress\Framework\Http\Route\RouteMatch;
+use Impress\Framework\Http\Middleware\MiddlewareMatch;
 
-class HttpBootstrap
+class Bootstrap
 {
     private static $routesFile;
     private $responseContent;
@@ -37,12 +38,17 @@ class HttpBootstrap
             $calssPosition = "\\App\\Http\\Controllers\\" . $className;
             $class = new $calssPosition();
 
-            // Middleware
+            // add middleware from route
             $routeMiddleware = $RouteMatch->getMiddleware($parameters);
             if ($routeMiddleware) {
-                call_user_func_array([$class, 'middleware'], $routeMiddleware);
+                /**
+                 * @see Controller::middleware
+                 */
+                call_user_func_array([$class, 'middleware'], [$routeMiddleware]);
             }
-            $return = Middleware::work();
+
+            // middleware work
+            $return = MiddlewareMatch::work($methodName);
 
             is_bool($return) && $return = call_user_func_array([$class, $methodName], array());
             $this->setResponseContent($return);
