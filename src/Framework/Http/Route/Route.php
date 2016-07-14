@@ -47,7 +47,7 @@ class Route
                 $k = substr($m, 0, $pos);
                 $v = substr($m, $pos + 1);
                 /**
-                 * support Routes file =? to Controller @see RouteMatch::getCustomArguments
+                 * support Routes file =? to Controller @see Impress\Framework\Http\Route\RouteParametersItem::getArguments
                  */
                 $options['defaults'][$k] = ($v == "?" ? null : $v);
             }
@@ -66,7 +66,7 @@ class Route
         // // assemble _options
         $_options = [];
         foreach ($options as $k => $v) {
-            $_options[RouteMatch::ROUTE_PARAMETER_PREFIX . $k] = $v;
+            $_options[RouteParametersItem::ROUTE_PARAMETER_PREFIX . $k] = $v;
         }
         unset($options);
 

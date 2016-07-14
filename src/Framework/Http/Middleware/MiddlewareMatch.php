@@ -1,7 +1,7 @@
 <?php
 namespace Impress\Framework\Http\Middleware;
 
-use Impress\Framework\Http\Route\RouteMatch;
+use Impress\Framework\Http\Route\RouteParametersItem;
 
 class MiddlewareMatch
 {
@@ -78,10 +78,10 @@ class MiddlewareMatch
         return true;
     }
 
-    public static function work($parameters)
+    public static function work(RouteParametersItem $parameters)
     {
         // add middleware from route
-        $routeMiddleware = RouteMatch::getMiddleware($parameters);
+        $routeMiddleware = $parameters->getMiddleware();
         if ($routeMiddleware) {
             self::addMiddleware($routeMiddleware);
         }
@@ -92,7 +92,7 @@ class MiddlewareMatch
                 $class = $m->getMiddleware();
                 $only = $m->getOnly();
                 $except = $m->getExcept();
-                if (self::isDealWork(RouteMatch::getController($parameters)[1], $only, $except)) {
+                if (self::isDealWork($parameters->getMethod(), $only, $except)) {
                     $instance = new $class($parameters);
                     $r = call_user_func([$instance, "handle"]);
                     if (!is_bool($r)) {

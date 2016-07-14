@@ -25,22 +25,19 @@ class Bootstrap
         $RouteMatch = new RouteMatch(self::$routesFile);
 
         $parameters = $RouteMatch->work();
-        $routeController = RouteMatch::getController($parameters);
-        $routeArguments = RouteMatch::getArguments($parameters);
+        $routeController = $parameters->getControllerAndMethod();
+        $routeArguments = $parameters->getArguments();
 
         if (is_callable($routeController)) {
             $return = call_user_func_array($routeController, $routeArguments);
         } else {
-            $className = $routeController[0];
-            $methodName = $routeController[1];
-
-            $calssPosition = "\\App\\Http\\Controllers\\" . $className;
-            $class = new $calssPosition($parameters);
+            $calssPosition = "\\App\\Http\\Controllers\\" . $parameters->getController();
+            $controllerInstance = call_user_func_array([$calssPosition, 'work'], [$parameters]);
 
             // middleware work
             $return = MiddlewareMatch::work($parameters);
 
-            is_bool($return) && $return = call_user_func_array([$class, $methodName], $routeArguments);
+            is_bool($return) && $return = call_user_func_array([$controllerInstance, $parameters->getMethod()], $routeArguments);
         }
 
         $this->setResponseContent($return);

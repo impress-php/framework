@@ -2,17 +2,19 @@
 namespace Impress\Framework\Http;
 
 use Impress\Framework\Http\Middleware\MiddlewareMatch;
-use Impress\Framework\Http\Route\RouteMatch;
+use Impress\Framework\Http\Route\RouteParametersItem;
 use Impress\Framework\Http\Session\Session;
 
 class Controller
 {
-    private $routeParameters;
+    private static $routeParameters;
     private static $response;
 
-    public function __construct(array $routeParameters = [])
+    final public static function work(RouteParametersItem $routeParameters)
     {
-        $this->routeParameters = $routeParameters;
+        self::$routeParameters = $routeParameters;
+        $class = get_called_class();
+        return new $class;
     }
 
     /**
@@ -79,18 +81,11 @@ class Controller
         MiddlewareMatch::addMiddleware($middleware, $options);
     }
 
-    public function getController()
+    /**
+     * @return RouteParametersItem
+     */
+    public function getRouteParameters()
     {
-        return RouteMatch::getController($this->routeParameters);
-    }
-
-    public function getArguments()
-    {
-        return RouteMatch::getArguments($this->routeParameters);
-    }
-
-    public function getRoute()
-    {
-        return RouteMatch::getRouteByParameters($this->routeParameters);
+        return self::$routeParameters;
     }
 }
