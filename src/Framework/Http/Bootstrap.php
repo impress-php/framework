@@ -25,35 +25,25 @@ class Bootstrap
         $RouteMatch = new RouteMatch(self::$routesFile);
 
         $parameters = $RouteMatch->work();
-        $routeController = $RouteMatch->getController($parameters);
-        $customArguments = $RouteMatch->getCustomArguments($parameters);
+        $routeController = RouteMatch::getController($parameters);
+        $routeArguments = RouteMatch::getArguments($parameters);
 
         if (is_callable($routeController)) {
-            $return = call_user_func_array($routeController, $customArguments);
-            $this->setResponseContent($return);
+            $return = call_user_func_array($routeController, $routeArguments);
         } else {
-            $atPos = strpos($routeController, "@");
-            $className = substr($routeController, 0, $atPos);
-            $methodName = substr($routeController, $atPos + 1);
+            $className = $routeController[0];
+            $methodName = $routeController[1];
 
             $calssPosition = "\\App\\Http\\Controllers\\" . $className;
-            $class = new $calssPosition();
-
-            // add middleware from route
-            $routeMiddleware = $RouteMatch->getMiddleware($parameters);
-            if ($routeMiddleware) {
-                /**
-                 * @see Controller::middleware
-                 */
-                call_user_func_array([$class, 'middleware'], [$routeMiddleware]);
-            }
+            $class = new $calssPosition($parameters);
 
             // middleware work
-            $return = MiddlewareMatch::work($methodName);
+            $return = MiddlewareMatch::work($parameters);
 
-            is_bool($return) && $return = call_user_func_array([$class, $methodName], $customArguments);
-            $this->setResponseContent($return);
+            is_bool($return) && $return = call_user_func_array([$class, $methodName], $routeArguments);
         }
+
+        $this->setResponseContent($return);
     }
 
     private function setResponseContent($content)

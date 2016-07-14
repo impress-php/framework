@@ -2,11 +2,18 @@
 namespace Impress\Framework\Http;
 
 use Impress\Framework\Http\Middleware\MiddlewareMatch;
+use Impress\Framework\Http\Route\RouteMatch;
 use Impress\Framework\Http\Session\Session;
 
 class Controller
 {
+    private $routeParameters;
     private static $response;
+
+    public function __construct(array $routeParameters = [])
+    {
+        $this->routeParameters = $routeParameters;
+    }
 
     /**
      * @param array $query
@@ -70,5 +77,20 @@ class Controller
     public function middleware($middleware, array $options = [])
     {
         MiddlewareMatch::addMiddleware($middleware, $options);
+    }
+
+    public function getController()
+    {
+        return RouteMatch::getController($this->routeParameters);
+    }
+
+    public function getArguments()
+    {
+        return RouteMatch::getArguments($this->routeParameters);
+    }
+
+    public function getRoute()
+    {
+        return RouteMatch::getRouteByParameters($this->routeParameters);
     }
 }

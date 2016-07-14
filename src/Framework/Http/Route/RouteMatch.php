@@ -61,39 +61,6 @@ class RouteMatch
         return $parameters;
     }
 
-    public function getController($parameters)
-    {
-        return isset($parameters[self::ROUTE_PARAMETER_PREFIX . 'controller']) ?
-            $parameters[self::ROUTE_PARAMETER_PREFIX . 'controller'] : null;
-    }
-
-    public function getMiddleware($parameters)
-    {
-        return isset($parameters[self::ROUTE_PARAMETER_PREFIX . 'middleware']) ?
-            $parameters[self::ROUTE_PARAMETER_PREFIX . 'middleware'] : null;
-    }
-
-    public function getCustomArguments($parameters)
-    {
-        $args = [];
-        foreach ($parameters as $k => $v) {
-            if (
-                substr($k, 0, count(self::ROUTE_PARAMETER_PREFIX) + 1) !== self::ROUTE_PARAMETER_PREFIX
-                /**
-                 * remove _route default @see UrlMatcher::getAttributes
-                 */
-                && $k !== '_route'
-                /**
-                 * support Routes file =? to Controller
-                 */
-                && !is_null($v)
-            ) {
-                $args[$k] = $v;
-            }
-        }
-        return $args;
-    }
-
     public static function addRoute(array $routeArgs)
     {
         foreach ([
@@ -202,5 +169,66 @@ class RouteMatch
     public static function getRoute($routeName)
     {
         return self::$routes[$routeName]['route'];
+    }
+
+    /**
+     * @param $parameters
+     * @return SymfonyRoute
+     */
+    public static function getRouteByParameters($parameters)
+    {
+        if (isset($parameters['_route'])) {
+            return self::$routes[$parameters['_route']]['route'];
+        }
+        return null;
+    }
+
+    public static function getController($parameters)
+    {
+        $controller = isset($parameters[self::ROUTE_PARAMETER_PREFIX . 'controller']) ?
+            $parameters[self::ROUTE_PARAMETER_PREFIX . 'controller'] : null;
+        if (!$controller) {
+            return [];
+        }
+
+        if (is_callable($controller)) {
+            return $controller;
+        }
+
+        $atPos = strpos($controller, "@");
+        $className = substr($controller, 0, $atPos);
+        $methodName = substr($controller, $atPos + 1);
+
+        return [
+            $className,
+            $methodName
+        ];
+    }
+
+    public static function getMiddleware($parameters)
+    {
+        return isset($parameters[self::ROUTE_PARAMETER_PREFIX . 'middleware']) ?
+            $parameters[self::ROUTE_PARAMETER_PREFIX . 'middleware'] : null;
+    }
+
+    public static function getArguments($parameters)
+    {
+        $args = [];
+        foreach ($parameters as $k => $v) {
+            if (
+                substr($k, 0, count(self::ROUTE_PARAMETER_PREFIX) + 1) !== self::ROUTE_PARAMETER_PREFIX
+                /**
+                 * remove _route default @see UrlMatcher::getAttributes
+                 */
+                && $k !== '_route'
+                /**
+                 * support Routes file =? to Controller
+                 */
+                && !is_null($v)
+            ) {
+                $args[$k] = $v;
+            }
+        }
+        return $args;
     }
 }
