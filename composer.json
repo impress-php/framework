@@ -20,7 +20,8 @@
         "vlucas/phpdotenv" : "~2.2",
         "danielstjules/stringy" : "~2.3.2",
         "doctrine/orm" : "~2.5.0",
-        "phpseclib/phpseclib" : "~2.0.2"
+        "phpseclib/phpseclib" : "~2.0.2",
+        "gregwar/captcha": "1.*"
     },
     "autoload": {
         "psr-4": {
