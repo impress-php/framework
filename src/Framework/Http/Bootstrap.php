@@ -26,9 +26,10 @@ class Bootstrap
 
         $parameters = $RouteMatch->work();
         $routeController = $RouteMatch->getController($parameters);
+        $customArguments = $RouteMatch->getCustomArguments($parameters);
 
         if (is_callable($routeController)) {
-            $return = call_user_func($routeController);
+            $return = call_user_func_array($routeController, $customArguments);
             $this->setResponseContent($return);
         } else {
             $atPos = strpos($routeController, "@");
@@ -50,7 +51,7 @@ class Bootstrap
             // middleware work
             $return = MiddlewareMatch::work($methodName);
 
-            is_bool($return) && $return = call_user_func_array([$class, $methodName], array());
+            is_bool($return) && $return = call_user_func_array([$class, $methodName], $customArguments);
             $this->setResponseContent($return);
         }
     }

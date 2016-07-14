@@ -8,6 +8,7 @@ class Route
 
     private static function makeRouteMatchOptions($path, $controller, $method, $options)
     {
+        $path = str_replace(" ", "", $path);
         is_null($options) && $options = [];
 
         // method
@@ -36,6 +37,22 @@ class Route
                 }
             }
             $path = implode("", $prefix_arr) . (!empty($path) ? $path : '');
+        }
+
+        // defaults & requirements
+        preg_match_all("/{(.[^{^}]*)}/", $path, $matches);
+        if (isset($matches[1])) {
+            foreach ($matches[1] as $m) {
+                $pos = strpos($m, "=");
+                $k = substr($m, 0, $pos);
+                $v = substr($m, $pos + 1);
+                $options['defaults'][$k] = $v;
+            }
+        }
+        $path = preg_replace("/{(.[^{^}]*)=(.[^{^}]*)}/", "{\$1}", $path);
+        if (isset($options['matches'])) {
+            $options['requirements'] = $options['matches'];
+            unset($options['matches']);
         }
 
         // assemble options

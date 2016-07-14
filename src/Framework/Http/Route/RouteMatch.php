@@ -73,6 +73,20 @@ class RouteMatch
             $parameters[self::ROUTE_PARAMETER_PREFIX . 'middleware'] : null;
     }
 
+    public function getCustomArguments($parameters)
+    {
+        $args = [];
+        foreach ($parameters as $k => $v) {
+            if (
+                substr($k, 0, count(self::ROUTE_PARAMETER_PREFIX) + 1) !== self::ROUTE_PARAMETER_PREFIX
+                && $k !== '_route'
+            ) {
+                $args[$k] = $v;
+            }
+        }
+        return $args;
+    }
+
     public static function addRoute(array $routeArgs)
     {
         foreach ([
@@ -81,6 +95,7 @@ class RouteMatch
                      'name',
                      'as',
                      'path',
+                     'defaults',
                      'requirements',
                      'options',
                      'host',
@@ -118,12 +133,21 @@ class RouteMatch
             }
         }
 
-        $defaults = [
+        $_defaults = [
             self::ROUTE_PARAMETER_PREFIX . 'controller' => $controller,
             self::ROUTE_PARAMETER_PREFIX . 'middleware' => $middleware
         ];
 
-        $route = new SymfonyRoute($path, $defaults, $requirements, $options, $host, $schemes, $methods, $condition);
+        $route = new SymfonyRoute(
+            $path,
+            array_merge($defaults, $_defaults),
+            $requirements,
+            $options,
+            $host,
+            $schemes,
+            $methods,
+            $condition
+        );
 
         $name = self::autoRouteName($name);
 
