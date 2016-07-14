@@ -79,7 +79,14 @@ class RouteMatch
         foreach ($parameters as $k => $v) {
             if (
                 substr($k, 0, count(self::ROUTE_PARAMETER_PREFIX) + 1) !== self::ROUTE_PARAMETER_PREFIX
+                /**
+                 * remove _route default @see UrlMatcher::getAttributes
+                 */
                 && $k !== '_route'
+                /**
+                 * support Routes file =? to Controller
+                 */
+                && !is_null($v)
             ) {
                 $args[$k] = $v;
             }

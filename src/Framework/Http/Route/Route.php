@@ -46,13 +46,16 @@ class Route
                 $pos = strpos($m, "=");
                 $k = substr($m, 0, $pos);
                 $v = substr($m, $pos + 1);
-                $options['defaults'][$k] = $v;
+                /**
+                 * support Routes file =? to Controller @see RouteMatch::getCustomArguments
+                 */
+                $options['defaults'][$k] = ($v == "?" ? null : $v);
             }
         }
         $path = preg_replace("/{(.[^{^}]*)=(.[^{^}]*)}/", "{\$1}", $path);
-        if (isset($options['matches'])) {
-            $options['requirements'] = $options['matches'];
-            unset($options['matches']);
+        if (isset($options['where'])) {
+            $options['requirements'] = $options['where'];
+            unset($options['where']);
         }
 
         // assemble options
