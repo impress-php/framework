@@ -133,4 +133,9 @@ class RouteParametersItem
 
         return null;
     }
+
+    public function toArray()
+    {
+        return $this->parameters;
+    }
 }
