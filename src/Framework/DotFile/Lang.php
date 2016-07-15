@@ -5,7 +5,7 @@ class Lang extends DotFile
 {
     private static $dir;
 
-    public static function get($dir, $parameters, $default = null)
+    public static function get($parameters, $dir = '', $default = null)
     {
         if (is_null(self::$dir)) {
             $dir = resources_path('lang') . DIRECTORY_SEPARATOR . $dir;

@@ -11,9 +11,9 @@ if (!function_exists("config")) {
 }
 
 if (!function_exists("lang")) {
-    function lang($dir, $parameters, $default = null)
+    function lang($parameters, $dir = '', $default = null)
     {
-        return Lang::get($dir, $parameters, $default);
+        return Lang::get($parameters, $dir, $default);
     }
 }
 
