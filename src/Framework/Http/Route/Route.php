@@ -91,7 +91,7 @@ class Route
 
         $diffClassMethods = array_merge(
             (get_class_methods('\Impress\Framework\Http\Controller') ?: []),
-            (get_class_methods(get_parent_class($classMethods)) ?: []),
+            (get_class_methods(get_parent_class($class)) ?: []),
             ['__construct', '__destruct', '__clone', '__get', '__set', '__call', '__callStatic', '__sleep', '__wakeup', '__clone']
         );
         $classMethods = array_unique(array_diff($classMethods, $diffClassMethods));

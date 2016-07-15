@@ -110,37 +110,51 @@ if (!function_exists('write_file')) {
     }
 }
 
-function root_path($path = '')
-{
-    return IMPRESS_PHP_ROOT_PATH . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+if (!function_exists('root_path')) {
+    function root_path($path = '')
+    {
+        return IMPRESS_PHP_ROOT_PATH . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+    }
 }
 
-function vendor_path($path = '')
-{
-    return root_path("vendor") . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+if (!function_exists('vendor_path')) {
+    function vendor_path($path = '')
+    {
+        return root_path("vendor") . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+    }
 }
 
-function config_path($path = '')
-{
-    return root_path("config") . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+if (!function_exists('config_path')) {
+    function config_path($path = '')
+    {
+        return root_path("config") . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+    }
 }
 
-function public_path($path = '')
-{
-    return root_path("public") . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+if (!function_exists('public_path')) {
+    function public_path($path = '')
+    {
+        return root_path("public") . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+    }
 }
 
-function resources_path($path = '')
-{
-    return root_path("resources") . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+if (!function_exists('resources_path')) {
+    function resources_path($path = '')
+    {
+        return root_path("resources") . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+    }
 }
 
-function storage_path($path = '')
-{
-    return root_path("storage") . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+if (!function_exists('storage_path')) {
+    function storage_path($path = '')
+    {
+        return root_path("storage") . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+    }
 }
 
-function app_path($path = '')
-{
-    return root_path("app") . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+if (!function_exists('app_path')) {
+    function app_path($path = '')
+    {
+        return root_path("app") . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+    }
 }
