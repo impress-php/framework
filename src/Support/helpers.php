@@ -1,12 +1,19 @@
 <?php
 use \Impress\Support\Str;
+use \Impress\Framework\DotFile\Config;
+use \Impress\Framework\DotFile\Lang;
 
 if (!function_exists("config")) {
     function config($parameters, $default = null)
     {
-        $value = \Impress\Framework\Config\Config::get($parameters);
-        if ($value === null) return value($default);
-        return $value;
+        return Config::get($parameters, $default);
+    }
+}
+
+if (!function_exists("lang")) {
+    function lang($dir, $parameters, $default = null)
+    {
+        return Lang::get($dir, $parameters, $default);
     }
 }
 
