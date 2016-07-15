@@ -14,7 +14,7 @@ class Bootstrap
         if (is_file($routesFile)) {
             self::$routesFile = $routesFile;
         } else {
-            self::$routesFile = app_path('Http' . DIRECTORY_SEPARATOR . 'Routes.php');
+            self::$routesFile = app_path('Http' . DIRECTORY_SEPARATOR . 'routes.php');
         }
 
         $this->httpWork();

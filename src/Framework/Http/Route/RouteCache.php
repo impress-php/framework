@@ -10,7 +10,7 @@ class RouteCache
     private static function getRoutesCacheFilename()
     {
         if (is_null(self::$routesCacheFilename)) {
-            self::$routesCacheFilename = storage_path('cache' . DIRECTORY_SEPARATOR . 'Routes.php');
+            self::$routesCacheFilename = storage_path('cache' . DIRECTORY_SEPARATOR . 'routes.php');
         }
         return self::$routesCacheFilename;
     }
