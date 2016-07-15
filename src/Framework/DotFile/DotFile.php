@@ -12,6 +12,9 @@ class DotFile
         if (!is_file($fileName)) {
             $fileName = dirname($baseDir) . DIRECTORY_SEPARATOR . $file . $fileExtension;
         }
+        if (!is_file($fileName)) {
+            throw new \RuntimeException("The file '{$fileName}' not found.");
+        }
         $fileNameHash = md5($fileName);
 
         if (!isset(self::$contentPool[$fileNameHash])) {
