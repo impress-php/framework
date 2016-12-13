@@ -108,7 +108,7 @@ class Route
             }
             $method = strtolower(substr($methodStr, 0, $pos));
             $path = substr($methodStr, $pos + 1);
-            $path = rtrim($path, "index");
+            ($path == "index") && $path = "";
             $controller = "{$controllerClassName}@{$m}";
 
             //name
