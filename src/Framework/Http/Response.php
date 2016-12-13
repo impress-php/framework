@@ -21,11 +21,11 @@ class Response extends VendorResponse
         return $this->raw($content, $statusCode, $headers);
     }
 
-    public function json(array $data, $statusCode = 200, array $headers = [
+    public function json(array $data, $options = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES, $statusCode = 200, array $headers = [
         "Content-Type" => "application/json"
     ])
     {
-        $content = json_encode($data);
+        $content = json_encode($data, $options);
         return $this->raw($content, $statusCode, $headers);
     }
 
